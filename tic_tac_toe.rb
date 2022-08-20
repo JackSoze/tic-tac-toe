@@ -5,20 +5,22 @@ end
 
 # this is the game
 class Tictactoe
+  @player1_choices = []
+
   def initialize(player1, player2)
+    @moves = 9
     @player1 = player1
     @player2 = player2
     greeting
     @positions = %w[1 2 3 4 5 6 7 8 9]
     play_board
     symbol_set
-    player1_play
-    player2_play
+    player_turn
   end
 
-  # private
+  private
 
-  attr_accessor :positions
+  attr_accessor :positions, :moves
 
   def greeting
     puts 'welcome to the game Tic-Tac-Toe'
@@ -54,16 +56,31 @@ class Tictactoe
     end
   end
 
+  def player_turn
+    while moves.positive?
+      player1_play
+      break if moves.zero?
+
+      player2_play
+    end
+  end
+
   def player1_play
+    player = @player1
     puts 'player 1 choose a number on the board'
     selected = gets.chomp.to_i
     checker(selected)
+    play_game(player, selected)
+    @moves -= 1
   end
 
   def player2_play
+    player = @player2
     puts 'player 2 choose a number on the board'
     selected = gets.chomp.to_i
     checker(selected)
+    play_game(player, selected)
+    @moves -= 1
   end
 
   def checker(selected)
@@ -71,19 +88,22 @@ class Tictactoe
       puts 'select again'
       selected = gets.chomp.to_i
     end
+  end
+
+  def play_game(player, selected)
     p1 = selected.to_s
     if positions.include?(p1)
-
-      positions.index(p1)
+      positions[positions.index(p1)] = player.symbol
     else
       puts 'select another'
+      p1 = gets.chomp
+      positions[positions.index(p1)] = player.symbol
     end
+    play_board
   end
 end
 
 player1 = Player.new
 player2 = Player.new
 game = Tictactoe.new(player1, player2)
-# puts player1.name
-# puts player1.symbol
-# puts game.positions
+puts game.greeting
