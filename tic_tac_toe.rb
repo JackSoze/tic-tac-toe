@@ -10,11 +10,13 @@ class Tictactoe
     @player2 = player2
     greeting
     @positions = %w[1 2 3 4 5 6 7 8 9]
-    # play_board
+    play_board
     symbol_set
+    player1_play
+    player2_play
   end
 
-  private
+  # private
 
   attr_accessor :positions
 
@@ -47,8 +49,34 @@ class Tictactoe
     puts "player 2, choose your symbol which should not be #{@player1.symbol}"
     @player2.symbol = gets.chomp
     while @player1.symbol == @player2.symbol
-      puts 'put another value for your symbol'
+      puts "'#{@player1.symbol}' selected by player 1, choose another"
       @player2.symbol = gets.chomp
+    end
+  end
+
+  def player1_play
+    puts 'player 1 choose a number on the board'
+    selected = gets.chomp.to_i
+    checker(selected)
+  end
+
+  def player2_play
+    puts 'player 2 choose a number on the board'
+    selected = gets.chomp.to_i
+    checker(selected)
+  end
+
+  def checker(selected)
+    while selected.zero?
+      puts 'select again'
+      selected = gets.chomp.to_i
+    end
+    p1 = selected.to_s
+    if positions.include?(p1)
+
+      positions.index(p1)
+    else
+      puts 'select another'
     end
   end
 end
@@ -56,5 +84,6 @@ end
 player1 = Player.new
 player2 = Player.new
 game = Tictactoe.new(player1, player2)
-puts player1.name
-puts player1.symbol
+# puts player1.name
+# puts player1.symbol
+# puts game.positions
