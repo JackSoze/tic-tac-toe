@@ -1,12 +1,20 @@
 # this creates the game player objects
 class Player
-  attr_accessor :name, :symbol
+  attr_accessor :name, :symbol, :choices
+
+  def initialize
+    @choices = []
+  end
+
+  def choices_combinations
+    self.choices.combination(3) { |combination| p combination }
+  end
 end
 
 # this is the game
 class Tictactoe
-  @player1_choices = []
-
+  @winning_combinations = [%w[1, 2, 3], %w[4, 5, 6], %w[7, 8, 9], %w[3, 6, 9], %w[2, 5, 8], %w[1, 4, 7], %w[3, 5, 7],
+                           %w[1, 5, 9]]
   def initialize(player1, player2)
     @moves = 9
     @player1 = player1
@@ -51,7 +59,7 @@ class Tictactoe
     puts "player 2, choose your symbol which should not be #{@player1.symbol}"
     @player2.symbol = gets.chomp
     while @player1.symbol == @player2.symbol
-      puts "'#{@player1.symbol}' selected by player 1, choose another"
+      puts "'#{@player1.symbol}' selected_number by player 1, choose another"
       @player2.symbol = gets.chomp
     end
   end
@@ -68,30 +76,30 @@ class Tictactoe
   def player1_play
     player = @player1
     puts 'player 1 choose a number on the board'
-    selected = gets.chomp.to_i
-    checker(selected)
-    play_game(player, selected)
+    selected_number = gets.chomp.to_i
+    checker(selected_number)
+    play_game(player, selected_number)
     @moves -= 1
   end
 
   def player2_play
     player = @player2
     puts 'player 2 choose a number on the board'
-    selected = gets.chomp.to_i
-    checker(selected)
-    play_game(player, selected)
+    selected_number = gets.chomp.to_i
+    checker(selected_number)
+    play_game(player, selected_number)
     @moves -= 1
   end
 
-  def checker(selected)
-    while selected.zero?
+  def checker(selected_number)
+    while selected_number.zero?
       puts 'select again'
-      selected = gets.chomp.to_i
+      selected_number = gets.chomp.to_i
     end
   end
 
-  def play_game(player, selected)
-    p1 = selected.to_s
+  def play_game(player, selected_number)
+    p1 = selected_number.to_s
     if positions.include?(p1)
       positions[positions.index(p1)] = player.symbol
     else
@@ -99,11 +107,16 @@ class Tictactoe
       p1 = gets.chomp
       positions[positions.index(p1)] = player.symbol
     end
+    player.choices.push(p1)
     play_board
   end
+
+  def determine_winner; end
 end
 
 player1 = Player.new
 player2 = Player.new
 game = Tictactoe.new(player1, player2)
-puts game.greeting
+puts player1.choices_combinations
+puts 'player 2 choices are...'
+puts player2.choices_combinations
