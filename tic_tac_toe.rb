@@ -17,25 +17,30 @@ class Tictactoe
     @moves = 9
     @player1 = player1
     @player2 = player2
-    greeting
     @positions = %w[1 2 3 4 5 6 7 8 9]
-    play_board
-    symbol_set
-    player_turn
-    determine_winner
-    winner_declaration
+    full_game
   end
 
-  # private
+  private
 
   attr_accessor :positions, :moves, :player1, :player2, :winning_combinations
+
+  def full_game
+    greeting
+    play_board
+    player_turn
+    determine_winner
+    replay
+  end
 
   def greeting
     puts 'welcome to the game Tic-Tac-Toe'
     # sleep 1.5
     player_names
+    symbol_set
   end
 
+  # called in greeting
   def player_names
     puts 'please enter player 1 name'
     @player1.name = gets.chomp
@@ -73,24 +78,27 @@ class Tictactoe
     end
   end
 
+  # called in player_turns
   def player1_play
     player = @player1
-    puts 'player 1 choose a number on the board'
+    puts "#{player1.name} choose a number on the board"
     selected_number = gets.chomp.to_i
     checker(selected_number)
     play_game(player, selected_number)
     @moves -= 1
   end
 
+  # called in player_turns
   def player2_play
     player = @player2
-    puts 'player 2 choose a number on the board'
+    puts "#{player2.name} choose a number on the board"
     selected_number = gets.chomp.to_i
     checker(selected_number)
     play_game(player, selected_number)
     @moves -= 1
   end
 
+  # supports player_play
   def checker(selected_number)
     while selected_number.zero?
       puts 'select again'
@@ -98,6 +106,7 @@ class Tictactoe
     end
   end
 
+  # supports player_play
   def play_game(player, selected_number)
     p1 = selected_number.to_s
     if positions.include?(p1)
@@ -108,7 +117,7 @@ class Tictactoe
       positions[positions.index(p1)] = player.symbol
     end
     player.choices.push(p1)
-    # play_board
+    play_board
   end
 
   def determine_winner
@@ -119,12 +128,26 @@ class Tictactoe
         player.wins += 1 if @winning_combinations.include?(combination)
       end
     end
+    winner_declaration
   end
 
   def winner_declaration
+    sleep 1
+    puts "\t\t GAME OVER!!!"
+    sleep 1
+    puts "\t ...and the score is"
     puts "\t #{player1.name} score: #{player1.wins}"
     puts "\t #{player2.name} score: #{player2.wins}"
-    puts player1.wins > player2.wins ? "\t#{player1.name} WINS!!!" : "\t#{player2.name} WINS!!!"
+    sleep 1
+    puts "\t <<<---and the winner is--->>>"
+    sleep 2
+    puts player1.wins > player2.wins ? "\t\t #{player1.name.upcase} WINS!!!" : "\t\t #{player2.name.upcase} WINS!!!"
+  end
+
+  def replay
+    puts "\nwould you like to play again?"
+    answer = gets.chomp
+    game = Tictactoe.new(player1, player2) if answer == 'yes'
   end
 end
 
