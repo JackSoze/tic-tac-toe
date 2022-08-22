@@ -1,21 +1,19 @@
 # this creates the game player objects
 class Player
-  attr_accessor :name, :symbol, :choices
+  attr_accessor :name, :symbol, :choices, :combinations, :wins
 
   def initialize
     @choices = []
-  end
-
-  def choices_combinations
-    self.choices.combination(3) { |combination| p combination }
+    @combinations = []
+    @wins = 0
   end
 end
 
 # this is the game
 class Tictactoe
-  @winning_combinations = [%w[1, 2, 3], %w[4, 5, 6], %w[7, 8, 9], %w[3, 6, 9], %w[2, 5, 8], %w[1, 4, 7], %w[3, 5, 7],
-                           %w[1, 5, 9]]
   def initialize(player1, player2)
+    @winning_combinations = [%w[1 2 3], %w[4 5 6], %w[7 8 9], %w[3 6 9], %w[2 5 8], %w[1 4 7], %w[3 5 7],
+                             %w[1 5 9]]
     @moves = 9
     @player1 = player1
     @player2 = player2
@@ -24,11 +22,13 @@ class Tictactoe
     play_board
     symbol_set
     player_turn
+    determine_winner
+    winner_declaration
   end
 
-  private
+  # private
 
-  attr_accessor :positions, :moves
+  attr_accessor :positions, :moves, :player1, :player2, :winning_combinations
 
   def greeting
     puts 'welcome to the game Tic-Tac-Toe'
@@ -108,15 +108,26 @@ class Tictactoe
       positions[positions.index(p1)] = player.symbol
     end
     player.choices.push(p1)
-    play_board
+    # play_board
   end
 
-  def determine_winner; end
+  def determine_winner
+    players = [player1, player2]
+    players.each do |player|
+      player.choices.combination(3) { |combination| player.combinations.push(combination) }
+      player.combinations.each do |combination|
+        player.wins += 1 if @winning_combinations.include?(combination)
+      end
+    end
+  end
+
+  def winner_declaration
+    puts "\t #{player1.name} score: #{player1.wins}"
+    puts "\t #{player2.name} score: #{player2.wins}"
+    puts player1.wins > player2.wins ? "\t#{player1.name} WINS!!!" : "\t#{player2.name} WINS!!!"
+  end
 end
 
 player1 = Player.new
 player2 = Player.new
 game = Tictactoe.new(player1, player2)
-puts player1.choices_combinations
-puts 'player 2 choices are...'
-puts player2.choices_combinations
