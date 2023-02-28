@@ -6,6 +6,15 @@ class Player
     @choices = []
     @combinations = []
     @wins = 0
+    @name = nil
+  end
+
+  def update_wins
+    @wins += 1
+  end
+
+  def create_combinations
+    choices.combination(3) { |combination| combinations.push(combination) }
   end
 end
 
@@ -49,10 +58,7 @@ class Tictactoe
     @player1 = player1
     @player2 = player2
     @positions = %w[1 2 3 4 5 6 7 8 9]
-    full_game
   end
-
-  private
 
   attr_accessor :positions, :moves, :player1, :player2, :winning_combinations
 
@@ -135,15 +141,18 @@ class Tictactoe
     play_board
   end
 
-  def determine_winner
+  def create_player_combinations
+    player1.create_combinations
+    player2.create_combinations
+  end
+
+  def calculate_wins
     players = [player1, player2]
     players.each do |player|
-      player.choices.combination(3) { |combination| player.combinations.push(combination) }
-      player.combinations.each do |combination|
-        player.wins += 1 if @winning_combinations.include?(combination)
+      player.combinations.each do |player_combination|
+        player.update_wins if winning_combinations.include?(player_combination)
       end
     end
-    winner_declaration
   end
 
   def replay
@@ -165,6 +174,7 @@ class Tictactoe
   end
 end
 
-player1 = Player.new
-player2 = Player.new
-game = Tictactoe.new(player1, player2)
+# player1 = Player.new
+# player2 = Player.new
+# game = Tictactoe.new(player1, player2)
+# game.full_game
