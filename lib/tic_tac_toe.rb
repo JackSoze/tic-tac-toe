@@ -54,7 +54,10 @@ class Tictactoe
     symbol_set
     play_board
     player_turn
+    create_player_combinations
+    calculate_wins
     determine_winner
+    declare_winner
     replay
   end
 
@@ -146,26 +149,30 @@ class Tictactoe
     if player1.wins > player2.wins 
       player1
     elsif player2.wins > player1.wins
-      player2
+     player2
     else
       nil
     end
   end
 
   def declare_winner
+    sleep 1
+    puts 'determing the winner'
+    sleep 2
     winner = determine_winner
     case winner
-    when winner.nil?
+    when nil
       puts "The game is a tie, scores below" 
       puts "#{player1.name}:#{player1.wins}"
       puts "#{player2.name}:#{player2.wins}"
-    when winner == player1
-      puts "#{player1} won the game with #{player1.wins}"
-      puts "#{player2} scored #{player2.wins}"
-    when winner == player2
-      puts "#{player2} won the game with #{player2.wins}"
-      puts "#{player1} scored #{player1.wins}"
+    when player1
+      puts "#{player1.name} won the game with #{player1.wins}"
+      puts "#{player2.name} scored #{player2.wins}"
+    when player2
+      puts "#{player2.name} won the game with #{player2.wins}"
+      puts "#{player1.name} scored #{player1.wins}"
     end
+   puts 'thank you for playing!!'
   end
 
   def replay
@@ -186,7 +193,7 @@ class Tictactoe
   end
 end
 
-# player1 = Player.new
-# player2 = Player.new
-# game = Tictactoe.new(player1, player2)
-# game.full_game
+player1 = Player.new
+player2 = Player.new
+game = Tictactoe.new(player1, player2)
+game.full_game
