@@ -33,19 +33,6 @@ module TwoPlayerGameBasics
     puts 'please enter player 2 name'
     @player2.name = gets.chomp
   end
-
-  def winner_declaration
-    sleep 1
-    puts "\t    GAME OVER!!!"
-    sleep 1
-    puts "\t ...and the score is"
-    puts "\t #{player1.name} score: #{player1.wins}"
-    puts "\t #{player2.name} score: #{player2.wins}"
-    sleep 1
-    puts "\t <<<---and the winner is--->>>"
-    sleep 2
-    puts player1.wins > player2.wins ? "\t\t #{player1.name.upcase} WINS!!!" : "\t\t #{player2.name.upcase} WINS!!!"
-  end
 end
 
 # this is the game
@@ -155,12 +142,37 @@ class Tictactoe
     end
   end
 
+  def determine_winner
+    if player1.wins > player2.wins 
+      player1
+    elsif player2.wins > player1.wins
+      player2
+    else
+      nil
+    end
+  end
+
+  def declare_winner
+    winner = determine_winner
+    case winner
+    when winner.nil?
+      puts "The game is a tie, scores below" 
+      puts "#{player1.name}:#{player1.wins}"
+      puts "#{player2.name}:#{player2.wins}"
+    when winner == player1
+      puts "#{player1} won the game with #{player1.wins}"
+      puts "#{player2} scored #{player2.wins}"
+    when winner == player2
+      puts "#{player2} won the game with #{player2.wins}"
+      puts "#{player1} scored #{player1.wins}"
+    end
+  end
+
   def replay
     players_restart
     puts "\nwould you like to play again?"
     answer = gets.chomp
     game = Tictactoe.new(player1, player2) if answer == 'yes'
-    puts player1.combinations
   end
 
   # to reset the players parameters
